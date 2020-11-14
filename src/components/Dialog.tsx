@@ -1,6 +1,6 @@
 import * as React from 'react'
 import * as PropTypes from 'prop-types'
-import { Link, Divider } from '@material-ui/core'
+import { Box, Typography, Link, Divider } from '@material-ui/core'
 import { withStyles } from '@material-ui/core/styles'
 import RequestGithubToken from './RequestGithubToken'
 import PullRequestTemplateSelector from './PullRequestTemplateSelector'
@@ -14,6 +14,9 @@ const styles = (theme) => ({
     position: 'fixed';
     top: theme.spacing(4);
     right: theme.spacing(1);
+  },
+  title: {
+    'margin-bottom': theme.spacing(1);
   },
   divider: {
     'margin-top': theme.spacing(2);
@@ -40,7 +43,10 @@ class Dialog extends React.Component {
   render() {
     const { classes } = this.props
     return (
-      <div className={classes.root}>
+      <Box className={classes.root} boxShadow={2}>
+        <Typography variant='h6' className={classes.title}>
+          Select Pull Request template
+        </Typography>
         {
           this.state.token && <PullRequestTemplateSelector />
         }
@@ -56,7 +62,7 @@ class Dialog extends React.Component {
           (this.state.token.length === 0 || this.state.showRequestGithubTokenForm) &&
             <RequestGithubToken />
         }
-      </div>
+      </Box>
     )
   }
 }

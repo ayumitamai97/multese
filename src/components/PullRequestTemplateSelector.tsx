@@ -45,7 +45,8 @@ const extractRepositoryIdentifier = url =>
 
 const styles = theme => ({
   chip: {
-    margin: theme.spacing(0.5)
+    'margin-left': theme.spacing(0.5)
+    'margin-right': theme.spacing(0.5)
   },
 })
 
