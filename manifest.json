@@ -1,0 +1,27 @@
+{
+  "name": "Multese",
+  "version": "0.0.1",
+  "description": "Let you select from multiple Pull Request templates",
+  "manifest_version": 2,
+  "author": {
+    "name": "aliendog.dev",
+    "url": "https://github.com/ayumitamai97",
+    "email": "aliendog.dev@gmail.com"
+  },
+  "permissions": [
+    "storage",
+    "tabs"
+  ],
+  "content_scripts": [
+    {
+      "matches": [
+        "https://github.com/*/*"
+      ],
+      "js": ["dist/showDialog.js"]
+    }
+  ],
+  "background": {
+    "scripts": ["dist/pageChanged.js"]
+  }
+}
+
