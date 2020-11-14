@@ -1,9 +1,27 @@
 import * as React from 'react'
+import * as PropTypes from 'prop-types'
+import { Link, Divider } from '@material-ui/core'
+import { withStyles } from '@material-ui/core/styles'
 import RequestGithubToken from './RequestGithubToken'
 import PullRequestTemplateSelector from './PullRequestTemplateSelector'
-import '../assets/dialog.scss'
 
-export default class Dialog extends React.Component {
+const styles = (theme) => ({
+  root: {
+    width: '360px';
+    background: theme.palette.common.white;
+    padding: theme.spacing(2);
+    'border-radius': theme.shape.borderRadius;
+    position: 'fixed';
+    top: theme.spacing(4);
+    right: theme.spacing(1);
+  },
+  divider: {
+    'margin-top': theme.spacing(2);
+    'margin-bottom': theme.spacing(2);
+  }
+})
+
+class Dialog extends React.Component {
   constructor(props) {
     super(props)
     this.state = { token: '', showRequestGithubTokenForm: false }
@@ -20,16 +38,18 @@ export default class Dialog extends React.Component {
     this.setState({ showRequestGithubTokenForm: true })
   }
   render() {
+    const { classes } = this.props
     return (
-      <div className='multese-dialog'>
+      <div className={classes.root}>
         {
           this.state.token && <PullRequestTemplateSelector />
         }
+        <Divider className={classes.divider} />
         {
           this.state.token && (
-            <button onClick={this.showRequestGithubTokenForm}>
+            <Link onClick={this.showRequestGithubTokenForm} size='small'>
               Update GitHub personal access token
-            </button>
+            </Link>
           )
         }
         {
@@ -40,3 +60,9 @@ export default class Dialog extends React.Component {
     )
   }
 }
+
+Dialog.propTypes = {
+  classes: PropTypes.object.isRequired
+}
+
+export default withStyles(styles)(Dialog)

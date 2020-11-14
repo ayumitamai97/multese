@@ -1,4 +1,7 @@
 import * as React from 'react'
+import * as PropTypes from 'prop-types'
+import { withStyles } from '@material-ui/core/styles'
+import { FormControlLabel, Chip } from '@material-ui/core'
 import { ApolloProvider } from '@apollo/react-hooks'
 import ApolloClient, { gql } from 'apollo-boost'
 const qs = require('querystring')
@@ -40,11 +43,18 @@ const getTokenFromChromeStorage = (callback) => {
 const extractRepositoryIdentifier = url =>
   url.match(/https:\/\/github\.com\/\w*\/\w*/)[0].replace(/^https:\/\/github\.com\//, '').replace(/\/$/, '')
 
-export default class PullRequestTemplateSelector extends React.Component {
+const styles = theme => ({
+  chip: {
+    margin: theme.spacing(0.5)
+  },
+})
+
+class PullRequestTemplateSelector extends React.Component {
   constructor(props) {
     super(props)
     this.state = { templateNames: [], selectedTemplateName: '' }
     this.selectTemplate = this.selectTemplate.bind(this)
+    this.isSelected = this.isSelected.bind(this)
   }
   componentDidMount() {
     const query = qs.parse(location.search.replace('?', ''))
@@ -78,29 +88,28 @@ export default class PullRequestTemplateSelector extends React.Component {
     })
   }
   selectTemplate({ target }) {
-    const templateName = target.value
+    const templateName = target.innerText
     const query = qs.parse(location.search.replace('?', ''))
     query.template = templateName
     const queryString = qs.stringify(query)
     location.href = `${location.origin}${location.pathname}?${queryString}`
   }
+  isSelected(value) {
+    return this.state.selectedTemplateName === value
+  }
   render() {
+    const { classes } = this.props;
     return (
       <div>
         {
           this.state.templateNames.map(templateName => (
-            <div key={templateName}>
-              <label htmlFor={templateName}>
-                <input
-                  type='radio'
-                  id={templateName}
-                  value={templateName}
-                  onClick={this.selectTemplate}
-                  defaultChecked={this.state.selectedTemplateName === templateName}
-                />
-                {templateName}
-              </label>
-            </div>
+            <Chip
+              key={templateName}
+              label={templateName}
+              color={this.isSelected(templateName) ? 'primary' : 'default'}
+              onClick={this.selectTemplate}
+              className={classes.chip}
+            />
           ))
         }
       </div>
@@ -108,3 +117,8 @@ export default class PullRequestTemplateSelector extends React.Component {
   }
 }
 
+PullRequestTemplateSelector.propTypes = {
+  classes: PropTypes.object.isRequired
+}
+
+export default withStyles(styles)(PullRequestTemplateSelector)
