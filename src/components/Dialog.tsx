@@ -1,9 +1,30 @@
 import * as React from 'react'
+import * as PropTypes from 'prop-types'
+import { Box, Typography, Link, Divider } from '@material-ui/core'
+import { withStyles } from '@material-ui/core/styles'
 import RequestGithubToken from './RequestGithubToken'
 import PullRequestTemplateSelector from './PullRequestTemplateSelector'
-import '../assets/dialog.scss'
 
-export default class Dialog extends React.Component {
+const styles = (theme) => ({
+  root: {
+    width: '360px';
+    background: theme.palette.common.white;
+    padding: theme.spacing(2);
+    'border-radius': theme.shape.borderRadius;
+    position: 'fixed';
+    top: theme.spacing(4);
+    right: theme.spacing(1);
+  },
+  title: {
+    'margin-bottom': theme.spacing(1);
+  },
+  divider: {
+    'margin-top': theme.spacing(2);
+    'margin-bottom': theme.spacing(2);
+  }
+})
+
+class Dialog extends React.Component {
   constructor(props) {
     super(props)
     this.state = { token: '', showRequestGithubTokenForm: false }
@@ -20,23 +41,34 @@ export default class Dialog extends React.Component {
     this.setState({ showRequestGithubTokenForm: true })
   }
   render() {
+    const { classes } = this.props
     return (
-      <div className='multese-dialog'>
+      <Box className={classes.root} boxShadow={2}>
+        <Typography variant='h6' className={classes.title}>
+          Select Pull Request template
+        </Typography>
         {
           this.state.token && <PullRequestTemplateSelector />
         }
+        <Divider className={classes.divider} />
         {
           this.state.token && (
-            <button onClick={this.showRequestGithubTokenForm}>
+            <Link onClick={this.showRequestGithubTokenForm} size='small'>
               Update GitHub personal access token
-            </button>
+            </Link>
           )
         }
         {
           (this.state.token.length === 0 || this.state.showRequestGithubTokenForm) &&
             <RequestGithubToken />
         }
-      </div>
+      </Box>
     )
   }
 }
+
+Dialog.propTypes = {
+  classes: PropTypes.object.isRequired
+}
+
+export default withStyles(styles)(Dialog)

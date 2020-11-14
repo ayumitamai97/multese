@@ -5,13 +5,7 @@ const fuse = FuseBox.init({
   entry: 'src/showDialog.tsx',
   target: 'browser',
   output: 'dist/$name.js',
-  devServer: this.runServer,
-  plugins: [
-    [
-      SassPlugin(),
-      CSSPlugin()
-    ]
-  ]
+  devServer: this.runServer
 })
 
 const showDialog = fuse.bundle('showDialog').instructions(' > showDialog.tsx')
