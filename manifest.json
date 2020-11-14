@@ -9,15 +9,19 @@
     "email": "aliendog.dev@gmail.com"
   },
   "permissions": [
-    "storage"
+    "storage",
+    "tabs"
   ],
   "content_scripts": [
     {
       "matches": [
-        "https://github.com/*/*/compare/*"
+        "https://github.com/*/*"
       ],
       "js": ["dist/showDialog.js"]
     }
-  ]
+  ],
+  "background": {
+    "scripts": ["dist/pageChanged.js"]
+  }
 }
 
