@@ -1,7 +1,7 @@
 import * as React from 'react'
-// import githubClient from '../apollo/githubClient'
 import { ApolloProvider } from '@apollo/react-hooks'
 import ApolloClient, { gql } from 'apollo-boost'
+const qs = require('querystring')
 
 const GET_PR_TEMPLATES = gql`
 query Query($repositoryName: String!, $repositoryOwner: String!, $refsRefPrefix: String!, $refsFirst: Int, $filePath: String!) {
@@ -37,12 +37,22 @@ const getTokenFromChromeStorage = (callback) => {
   chrome.storage.sync.get({ token: '' }, callback)
 }
 
-export default class PullRequestTemplateSelectBox extends React.Component {
+const extractRepositoryIdentifier = url =>
+  url.match(/https:\/\/github\.com\/\w*\/\w*/)[0].replace(/^https:\/\/github\.com\//, '').replace(/\/$/, '')
+
+export default class PullRequestTemplateSelector extends React.Component {
   constructor(props) {
     super(props)
-    this.state = { templateNames: [] }
+    this.state = { templateNames: [], selectedTemplateName: '' }
+    this.selectTemplate = this.selectTemplate.bind(this)
   }
   componentDidMount() {
+    const query = qs.parse(location.search.replace('?', ''))
+    this.setState({ selectedTemplateName: query.template })
+
+    const repositoryIdentifier = extractRepositoryIdentifier(location.href)
+    const [repositoryOwner, repositoryName] = repositoryIdentifier.split('/')
+
     getTokenFromChromeStorage((storageItems) => {
       const token = storageItems.token
       const githubClient = new ApolloClient({
@@ -54,11 +64,11 @@ export default class PullRequestTemplateSelectBox extends React.Component {
       githubClient.query({
         query: GET_PR_TEMPLATES,
         variables: {
-          "repositoryName": "multese",
-          "repositoryOwner": "ayumitamai97",
-          "refsRefPrefix": "refs/heads/",
-          "refsFirst": 1,
-          "filePath": ".github/PULL_REQUEST_TEMPLATE/"
+          repositoryName,
+          repositoryOwner,
+          refsRefPrefix: 'refs/heads/',
+          refsFirst: 1,
+          filePath: '.github/PULL_REQUEST_TEMPLATE/'
         }
       }).then(({ data }) => {
         const lastCommit = data.repository.refs.nodes[0]
@@ -67,14 +77,34 @@ export default class PullRequestTemplateSelectBox extends React.Component {
       })
     })
   }
+  selectTemplate({ target }) {
+    const templateName = target.value
+    const query = qs.parse(location.search.replace('?', ''))
+    query.template = templateName
+    const queryString = qs.stringify(query)
+    location.href = `${location.origin}${location.pathname}?${queryString}`
+  }
   render() {
     return (
       <div>
-        {this.state.templateNames.map(name => (
-          <div key={name}>{name}</div>
-        ))}
+        {
+          this.state.templateNames.map(templateName => (
+            <div key={templateName}>
+              <label htmlFor={templateName}>
+                <input
+                  type='radio'
+                  id={templateName}
+                  value={templateName}
+                  onClick={this.selectTemplate}
+                  defaultChecked={this.state.selectedTemplateName === templateName}
+                />
+                {templateName}
+              </label>
+            </div>
+          ))
+        }
       </div>
-)
+    )
   }
 }
 

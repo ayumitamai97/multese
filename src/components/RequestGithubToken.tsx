@@ -15,7 +15,10 @@ export default class RequestGithubToken extends React.Component {
       token: this.state.token
     }, () => {
       this.setState({ formStatus: 'Saved' })
-      setTimeout(() => this.setState({ formStatus: '' }), 1000)
+      setTimeout(() => {
+        this.setState({ formStatus: '' })
+        location.reload()
+      }, 1000)
     })
   }
   render() {
