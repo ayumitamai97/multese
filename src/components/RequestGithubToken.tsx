@@ -40,10 +40,10 @@ class RequestGithubToken extends React.Component {
     return (
       <div class={classes.root}>
         <TextField
-          type="text"
+          type='text' // Avoid password manager detection
           value={this.state.token}
           onChange={this.handleChange}
-          placeholder="Your GitHub personal access token"
+          placeholder='Your GitHub personal access token'
           className={classes.textField}
         />
         <Button onClick={this.handleSubmit} variant='contained' color='primary'>
