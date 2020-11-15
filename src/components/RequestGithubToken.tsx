@@ -46,7 +46,7 @@ class RequestGithubToken extends React.Component {
           placeholder='Your GitHub personal access token'
           className={classes.textField}
         />
-        <Button onClick={this.handleSubmit} variant='contained' color='primary'>
+        <Button onClick={this.handleSubmit} variant='contained' color='primary' size='small'>
           {this.state.submitButtonText}
         </Button>
       </div>
