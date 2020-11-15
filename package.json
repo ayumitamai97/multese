@@ -2,7 +2,7 @@
   "scripts": {
     "dev": "ts-node -T fuse.ts --hmr",
     "build": "ts-node -T fuse.ts",
-    "zip": "zip -r multese.zip dist manifest.json",
+    "zip": "zip -r multese.zip dist icons manifest.json",
     "unzip": "unzip multese.zip -d unzipped"
   },
   "dependencies": {

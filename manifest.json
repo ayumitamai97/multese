@@ -22,6 +22,11 @@
   ],
   "background": {
     "scripts": ["dist/pageChanged.js"]
+  },
+  "icons": {
+    "16": "icons/multese-logo-16.png",
+    "48": "icons/multese-logo-48.png",
+    "128": "icons/multese-logo-128.png"
   }
 }
 
