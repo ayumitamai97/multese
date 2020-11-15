@@ -33,7 +33,13 @@ and click "SAVE"
 ## Troubleshooting
 
 ### My Pull Request template does not show up
+
 - Ensure you have registered your valid GitHub personal access token
+
+- Ensure your Pull Request template directory is named correctly (`.github/PULL_REQUEST_TEMPLATE/`)
+
+- If hostname is not `github.com`, Multese may not work
+
 
 ### Other troubles
 
