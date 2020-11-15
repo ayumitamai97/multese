@@ -8,20 +8,20 @@ import PullRequestTemplateSelector from './PullRequestTemplateSelector'
 
 const styles = (theme) => ({
   root: {
-    width: '360px';
-    background: theme.palette.common.white;
-    padding: theme.spacing(2);
-    'border-radius': theme.shape.borderRadius;
-    position: 'fixed';
-    top: theme.spacing(4);
-    right: theme.spacing(1);
+    width: '360px',
+    background: theme.palette.common.white,
+    padding: theme.spacing(2),
+    'border-radius': theme.shape.borderRadius,
+    position: 'fixed',
+    top: theme.spacing(4),
+    right: theme.spacing(1),
   },
   header: {
-    'margin-bottom': theme.spacing(1);
+    'margin-bottom': theme.spacing(1),
   },
   divider: {
-    'margin-top': theme.spacing(2);
-    'margin-bottom': theme.spacing(2);
+    'margin-top': theme.spacing(2),
+    'margin-bottom': theme.spacing(2),
   }
 })
 

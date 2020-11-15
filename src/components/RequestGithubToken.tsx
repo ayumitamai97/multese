@@ -5,13 +5,13 @@ import { withStyles } from '@material-ui/core/styles'
 
 const styles = (theme) => ({
   root: {
-    'margin-top': theme.spacing(2);
-    'margin-bottom': theme.spacing(2);
+    'margin-top': theme.spacing(2),
+    'margin-bottom': theme.spacing(2),
   },
   textField: {
-    width: '100%';
-    'margin-right': theme.spacing(1);
-    'margin-bottom': theme.spacing(1);
+    width: '100%',
+    'margin-right': theme.spacing(1),
+    'margin-bottom': theme.spacing(1),
   }
 })
 
