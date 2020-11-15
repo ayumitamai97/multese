@@ -1,21 +1,28 @@
 import * as React from 'react'
-import * as PropTypes from 'prop-types'
 import { Button, TextField } from '@material-ui/core'
-import { withStyles } from '@material-ui/core/styles'
+import { withStyles, Theme } from '@material-ui/core/styles'
 
-const styles = (theme) => ({
+const styles = (theme: Theme) => ({
   root: {
-    'margin-top': theme.spacing(2);
-    'margin-bottom': theme.spacing(2);
+    'margin-top': theme.spacing(2),
+    'margin-bottom': theme.spacing(2),
   },
   textField: {
-    width: '100%';
-    'margin-right': theme.spacing(1);
-    'margin-bottom': theme.spacing(1);
+    width: '100%',
+    'margin-right': theme.spacing(1),
+    'margin-bottom': theme.spacing(1),
   }
 })
 
-class RequestGithubToken extends React.Component {
+interface RequestGithubTokenProps {
+  classes: { [key: string]: string }
+}
+interface RequestGithubTokenState {
+  token: string
+  submitButtonText: string
+}
+
+class RequestGithubToken extends React.Component<RequestGithubTokenProps, RequestGithubTokenState> {
   constructor(props) {
     super(props)
     this.state = { token: '', submitButtonText: 'Save' }
@@ -52,10 +59,6 @@ class RequestGithubToken extends React.Component {
       </div>
     )
   }
-}
-
-RequestGithubToken.propTypes = {
-  classes: PropTypes.object.isRequired
 }
 
 export default withStyles(styles)(RequestGithubToken)

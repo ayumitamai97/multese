@@ -1,32 +1,40 @@
 import * as React from 'react'
-import * as PropTypes from 'prop-types'
 import { Box, Grid, Typography, Link, Divider, IconButton } from '@material-ui/core'
 import CloseIcon from '@material-ui/icons/Close'
-import { withStyles } from '@material-ui/core/styles'
+import { withStyles, createStyles, Theme } from '@material-ui/core/styles'
 import RequestGithubToken from './RequestGithubToken'
 import PullRequestTemplateSelector from './PullRequestTemplateSelector'
 
-const styles = (theme) => ({
+const styles = (theme: Theme) => (createStyles({
   root: {
-    width: '360px';
-    background: theme.palette.common.white;
-    padding: theme.spacing(2);
-    'border-radius': theme.shape.borderRadius;
-    position: 'fixed';
-    top: theme.spacing(4);
-    right: theme.spacing(1);
+    width: '360px',
+    background: theme.palette.common.white,
+    padding: theme.spacing(2),
+    borderRadius: theme.shape.borderRadius,
+    position: 'fixed',
+    top: theme.spacing(4),
+    right: theme.spacing(1),
   },
   header: {
-    'margin-bottom': theme.spacing(1);
+    marginBottom: theme.spacing(1),
   },
   divider: {
-    'margin-top': theme.spacing(2);
-    'margin-bottom': theme.spacing(2);
+    marginTop: theme.spacing(2),
+    marginBottom: theme.spacing(2),
   }
-})
+}))
 
-class Dialog extends React.Component {
-  constructor(props) {
+interface DialogProps {
+  classes: { [key: string]: string }
+}
+interface DialogState {
+  showDialog: boolean
+  showRequestGithubTokenForm: boolean
+  token: string
+}
+
+class Dialog extends React.Component<DialogProps, DialogState> {
+  constructor(props: DialogProps) {
     super(props)
     this.state = { showDialog: true, token: '', showRequestGithubTokenForm: false }
     this.showRequestGithubTokenForm = this.showRequestGithubTokenForm.bind(this)
@@ -64,7 +72,7 @@ class Dialog extends React.Component {
         <Divider className={classes.divider} />
         {
           this.state.token && (
-            <Link onClick={this.showRequestGithubTokenForm} size='small'>
+            <Link component='a' onClick={this.showRequestGithubTokenForm}>
               Update GitHub personal access token
             </Link>
           )
@@ -76,10 +84,6 @@ class Dialog extends React.Component {
       </Box>
     )
   }
-}
-
-Dialog.propTypes = {
-  classes: PropTypes.object.isRequired
 }
 
 export default withStyles(styles)(Dialog)

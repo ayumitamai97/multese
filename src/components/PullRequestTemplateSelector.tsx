@@ -1,10 +1,8 @@
 import * as React from 'react'
-import * as PropTypes from 'prop-types'
-import { withStyles } from '@material-ui/core/styles'
-import { FormControlLabel, Chip } from '@material-ui/core'
-import { ApolloProvider } from '@apollo/react-hooks'
+import { withStyles, Theme } from '@material-ui/core/styles'
+import { Chip } from '@material-ui/core'
 import ApolloClient, { gql } from 'apollo-boost'
-const qs = require('querystring')
+import qs = require('querystring')
 
 const GET_PR_TEMPLATES = gql`
 query Query($repositoryName: String!, $repositoryOwner: String!, $refsRefPrefix: String!, $refsFirst: Int, $filePath: String!) {
@@ -43,16 +41,25 @@ const getTokenFromChromeStorage = (callback) => {
 const extractRepositoryIdentifier = url =>
   url.match(/https:\/\/github\.com\/\w*\/\w*/)[0].replace(/^https:\/\/github\.com\//, '').replace(/\/$/, '')
 
-const styles = theme => ({
+const styles = (theme: Theme) => ({
   chip: {
-    'margin-left': theme.spacing(0.5)
+    'margin-left': theme.spacing(0.5),
     'margin-right': theme.spacing(0.5)
   },
 })
 
 const DEFAULT_TEMPLATE_NAME = 'default'
 
-class PullRequestTemplateSelector extends React.Component {
+interface PullRequestTemplateSelectorProps {
+  classes: { [key: string]: string }
+} 
+
+interface PullRequestTemplateSelectorState {
+  templateNames: Array<string>
+  selectedTemplateName: string
+} 
+
+class PullRequestTemplateSelector extends React.Component<PullRequestTemplateSelectorProps, PullRequestTemplateSelectorState> {
   constructor(props) {
     super(props)
     this.state = { templateNames: [], selectedTemplateName: '' }
@@ -61,7 +68,7 @@ class PullRequestTemplateSelector extends React.Component {
   }
   componentDidMount() {
     const query = qs.parse(location.search.replace('?', ''))
-    const selectedTemplateName = query.template || DEFAULT_TEMPLATE_NAME
+    const selectedTemplateName = (Array.isArray(query.template) ? query.template[0] : query.template) || DEFAULT_TEMPLATE_NAME
     this.setState({ selectedTemplateName })
 
     const repositoryIdentifier = extractRepositoryIdentifier(location.href)
@@ -124,10 +131,6 @@ class PullRequestTemplateSelector extends React.Component {
       </div>
     )
   }
-}
-
-PullRequestTemplateSelector.propTypes = {
-  classes: PropTypes.object.isRequired
 }
 
 export default withStyles(styles)(PullRequestTemplateSelector)
