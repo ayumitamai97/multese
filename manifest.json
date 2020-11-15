@@ -1,7 +1,7 @@
 {
   "name": "Multese",
   "version": "0.0.1",
-  "description": "Let you select from multiple Pull Request templates",
+  "description": "Bring order to chaotic Pull Request description, by letting you utilize multiple Pull Request templates",
   "manifest_version": 2,
   "author": {
     "name": "aliendog.dev",
