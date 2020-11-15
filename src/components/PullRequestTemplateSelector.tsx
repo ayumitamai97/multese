@@ -104,8 +104,6 @@ class PullRequestTemplateSelector extends React.Component {
     }
   }
   isSelected(value) {
-    console.log(value)
-    console.log(this.state.selectedTemplateName)
     return this.state.selectedTemplateName === value
   }
   render() {

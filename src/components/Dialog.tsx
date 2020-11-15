@@ -1,6 +1,7 @@
 import * as React from 'react'
 import * as PropTypes from 'prop-types'
-import { Box, Typography, Link, Divider } from '@material-ui/core'
+import { Box, Grid, Typography, Link, Divider, IconButton } from '@material-ui/core'
+import CloseIcon from '@material-ui/icons/Close'
 import { withStyles } from '@material-ui/core/styles'
 import RequestGithubToken from './RequestGithubToken'
 import PullRequestTemplateSelector from './PullRequestTemplateSelector'
@@ -15,7 +16,7 @@ const styles = (theme) => ({
     top: theme.spacing(4);
     right: theme.spacing(1);
   },
-  title: {
+  header: {
     'margin-bottom': theme.spacing(1);
   },
   divider: {
@@ -27,8 +28,9 @@ const styles = (theme) => ({
 class Dialog extends React.Component {
   constructor(props) {
     super(props)
-    this.state = { token: '', showRequestGithubTokenForm: false }
+    this.state = { showDialog: true, token: '', showRequestGithubTokenForm: false }
     this.showRequestGithubTokenForm = this.showRequestGithubTokenForm.bind(this)
+    this.handleClose = this.handleClose.bind(this)
   }
   componentDidMount() {
     chrome.storage.sync.get({
@@ -40,13 +42,22 @@ class Dialog extends React.Component {
   showRequestGithubTokenForm() {
     this.setState({ showRequestGithubTokenForm: true })
   }
+  handleClose() {
+    this.setState({ showDialog: false })
+  }
   render() {
     const { classes } = this.props
+    if (!this.state.showDialog) { return null }
     return (
       <Box className={classes.root} boxShadow={2}>
-        <Typography variant='h6' className={classes.title}>
-          Select Pull Request template
-        </Typography>
+        <Grid container justify='space-between' alignItems='center' className={classes.header}>
+          <Typography variant='h6'>
+            Select Pull Request template
+          </Typography>
+          <IconButton size='small' onClick={this.handleClose}>
+            <CloseIcon />
+          </IconButton>
+        </Grid>
         {
           this.state.token && <PullRequestTemplateSelector />
         }

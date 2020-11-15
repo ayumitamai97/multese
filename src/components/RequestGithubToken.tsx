@@ -38,7 +38,7 @@ class RequestGithubToken extends React.Component {
   render() {
     const { classes } = this.props
     return (
-      <div class={classes.root}>
+      <div className={classes.root}>
         <TextField
           type='text' // Avoid password manager detection
           value={this.state.token}
