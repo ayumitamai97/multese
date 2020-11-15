@@ -50,6 +50,8 @@ const styles = theme => ({
   },
 })
 
+const DEFAULT_TEMPLATE_NAME = 'default'
+
 class PullRequestTemplateSelector extends React.Component {
   constructor(props) {
     super(props)
@@ -59,7 +61,8 @@ class PullRequestTemplateSelector extends React.Component {
   }
   componentDidMount() {
     const query = qs.parse(location.search.replace('?', ''))
-    this.setState({ selectedTemplateName: query.template })
+    const selectedTemplateName = query.template || DEFAULT_TEMPLATE_NAME
+    this.setState({ selectedTemplateName })
 
     const repositoryIdentifier = extractRepositoryIdentifier(location.href)
     const [repositoryOwner, repositoryName] = repositoryIdentifier.split('/')
@@ -83,17 +86,22 @@ class PullRequestTemplateSelector extends React.Component {
         }
       }).then(({ data }) => {
         const lastCommit = data.repository.refs.nodes[0]
-        const templateNames = lastCommit.target.file.object.entries.map(fileEntry => fileEntry.name)
+        const templateNamesFromRepository = lastCommit.target.file.object.entries.map(fileEntry => fileEntry.name)
+        const templateNames = [DEFAULT_TEMPLATE_NAME, ...templateNamesFromRepository]
         this.setState({ templateNames })
       })
     })
   }
   selectTemplate({ target }) {
     const templateName = target.innerText
-    const query = qs.parse(location.search.replace('?', ''))
-    query.template = templateName
-    const queryString = qs.stringify(query)
-    location.href = `${location.origin}${location.pathname}?${queryString}`
+    if (templateName === DEFAULT_TEMPLATE_NAME) {
+      location.href = `${location.origin}${location.pathname}`
+    } else {
+      const query = qs.parse(location.search.replace('?', ''))
+      query.template = templateName
+      const queryString = qs.stringify(query)
+      location.href = `${location.origin}${location.pathname}?${queryString}`
+    }
   }
   isSelected(value) {
     return this.state.selectedTemplateName === value
