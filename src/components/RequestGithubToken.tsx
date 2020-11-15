@@ -18,7 +18,7 @@ const styles = (theme) => ({
 class RequestGithubToken extends React.Component {
   constructor(props) {
     super(props)
-    this.state = { token: '', formStatus: '' }
+    this.state = { token: '', submitButtonText: 'Save' }
     this.handleChange = this.handleChange.bind(this)
     this.handleSubmit = this.handleSubmit.bind(this)
   }
@@ -29,9 +29,8 @@ class RequestGithubToken extends React.Component {
     chrome.storage.sync.set({
       token: this.state.token
     }, () => {
-      this.setState({ formStatus: 'Saved' })
+      this.setState({ submitButtonText: 'Saved' })
       setTimeout(() => {
-        this.setState({ formStatus: '' })
         location.reload()
       }, 1000)
     })
@@ -48,11 +47,8 @@ class RequestGithubToken extends React.Component {
           className={classes.textField}
         />
         <Button onClick={this.handleSubmit} variant='contained' color='primary'>
-          Save
+          {this.state.submitButtonText}
         </Button>
-        <div>
-          {this.state.formStatus}
-        </div>
       </div>
     )
   }
