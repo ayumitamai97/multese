@@ -6,7 +6,7 @@ Multese brings order to _chaotic Pull Request description_, by letting you utili
 
 ## Usage
 
-1. Install Multese at Chrome Web Store [TODO]
+1. Install [Multese](https://chrome.google.com/webstore/detail/multese/gbemnmnccbkifpcogeokbldhapeeobag) at Chrome Web Store
 
 2. Place some Pull Request templates in your repository's `.github/PULL_REQUEST_TEMPLATE/` directory as stated in [official docs](https://docs.github.com/en/free-pro-team@latest/github/building-a-strong-community/creating-a-pull-request-template-for-your-repository)
 
@@ -17,7 +17,8 @@ Multese brings order to _chaotic Pull Request description_, by letting you utili
     *Multese use your token **only for GitHub API** and store it only in your chrome storage, so that it can get Pull Request templates from the repository
 
 4. Compare your topic branch with main branch
-URL should look like this: https://github.com/ayumitamai97/multese/compare/main...dev
+
+  URL should look like this: https://github.com/ayumitamai97/multese/compare/main...dev
 
 5. Paste your GitHub personal access token to Multese dialog in the upper-right corner of the page
 and click "SAVE"

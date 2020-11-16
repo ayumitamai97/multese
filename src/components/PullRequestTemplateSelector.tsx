@@ -4,10 +4,20 @@ import { Chip } from '@material-ui/core'
 import ApolloClient, { gql } from 'apollo-boost'
 import qs = require('querystring')
 
-const GET_PR_TEMPLATES = gql`
-query Query($repositoryName: String!, $repositoryOwner: String!, $refsRefPrefix: String!, $refsFirst: Int, $filePath: String!) {
+const GET_DEFAULT_BRANCH_NAME = gql`
+query Query($repositoryName: String!, $repositoryOwner: String!) {
   repository(name: $repositoryName, owner: $repositoryOwner) {
-    refs(refPrefix: $refsRefPrefix, last: $refsFirst) {
+    defaultBranchRef {
+      name
+    }
+  }
+}
+`
+
+const GET_PR_TEMPLATES = gql`
+query Query($repositoryName: String!, $repositoryOwner: String!, $refsRefPrefix: String!, $refsLast: Int, $refsQuery: String!, $filePath: String!) {
+  repository(name: $repositoryName, owner: $repositoryOwner) {
+    refs(refPrefix: $refsRefPrefix, last: $refsLast, query: $refsQuery) {
       nodes {
         id
         target {
@@ -34,13 +44,6 @@ query Query($repositoryName: String!, $repositoryOwner: String!, $refsRefPrefix:
 }
 `
 
-const getTokenFromChromeStorage = (callback) => {
-  chrome.storage.sync.get({ token: '' }, callback)
-}
-
-const extractRepositoryIdentifier = url =>
-  url.match(/https:\/\/github\.com\/\w*\/\w*/)[0].replace(/^https:\/\/github\.com\//, '').replace(/\/$/, '')
-
 const styles = (theme: Theme) => ({
   chip: {
     'margin-left': theme.spacing(0.5),
@@ -52,12 +55,17 @@ const DEFAULT_TEMPLATE_NAME = 'default'
 
 interface PullRequestTemplateSelectorProps {
   classes: { [key: string]: string }
-} 
+}
 
 interface PullRequestTemplateSelectorState {
   templateNames: Array<string>
   selectedTemplateName: string
-} 
+}
+
+interface GithubRepository {
+  ownerName: string
+  name: string
+}
 
 class PullRequestTemplateSelector extends React.Component<PullRequestTemplateSelectorProps, PullRequestTemplateSelectorState> {
   constructor(props) {
@@ -71,32 +79,50 @@ class PullRequestTemplateSelector extends React.Component<PullRequestTemplateSel
     const selectedTemplateName = (Array.isArray(query.template) ? query.template[0] : query.template) || DEFAULT_TEMPLATE_NAME
     this.setState({ selectedTemplateName })
 
-    const repositoryIdentifier = extractRepositoryIdentifier(location.href)
+    const repositoryIdentifier = this.extractRepositoryIdentifier(location.href)
     const [repositoryOwner, repositoryName] = repositoryIdentifier.split('/')
+    const githubRepository: GithubRepository = { ownerName: repositoryOwner, name: repositoryName }
 
-    getTokenFromChromeStorage((storageItems) => {
-      const token = storageItems.token
-      const githubClient = new ApolloClient({
-        uri: 'https://api.github.com/graphql',
-        headers: {
-          Authorization: `Bearer ${token}`,
-        }
-      })
-      githubClient.query({
-        query: GET_PR_TEMPLATES,
-        variables: {
-          repositoryName,
-          repositoryOwner,
-          refsRefPrefix: 'refs/heads/',
-          refsFirst: 1,
-          filePath: '.github/PULL_REQUEST_TEMPLATE/'
-        }
-      }).then(({ data }) => {
-        const lastCommit = data.repository.refs.nodes[0]
-        const templateNamesFromRepository = lastCommit.target.file.object.entries.map(fileEntry => fileEntry.name)
-        const templateNames = [DEFAULT_TEMPLATE_NAME, ...templateNamesFromRepository]
-        this.setState({ templateNames })
-      })
+    this.getTokenFromChromeStorage((storageItems) => this.getTemplateNames(storageItems, githubRepository))
+  }
+  getTokenFromChromeStorage(callback: function) {
+    return chrome.storage.sync.get({ token: '' }, callback)
+  }
+  extractRepositoryIdentifier(url: string): string {
+    return url.match(/https:\/\/github\.com\/\w*\/\w*/)[0].replace(/^https:\/\/github\.com\//, '').replace(/\/$/, '')
+  }
+  async getTemplateNames(storageItems: any, githubRepository: GithubRepository) {
+    const token = storageItems.token
+    const githubClient = new ApolloClient({
+      uri: 'https://api.github.com/graphql',
+      headers: {
+        Authorization: `Bearer ${token}`,
+      }
+    })
+    const defaultBranchNameResult = await githubClient.query({
+      query: GET_DEFAULT_BRANCH_NAME,
+      variables: {
+        repositoryOwner: githubRepository.ownerName,
+        repositoryName: githubRepository.name,
+      }
+    })
+    const defaultBranchName = defaultBranchNameResult.data.repository.defaultBranchRef.name
+
+    githubClient.query({
+      query: GET_PR_TEMPLATES,
+      variables: {
+        repositoryOwner: githubRepository.ownerName,
+        repositoryName: githubRepository.name,
+        refsRefPrefix: 'refs/heads/',
+        refsLast: 1,
+        refsQuery: defaultBranchName,
+        filePath: '.github/PULL_REQUEST_TEMPLATE/'
+      }
+    }).then(({ data }) => {
+      const lastCommit = data.repository.refs.nodes[0]
+      const templateNamesFromRepository = lastCommit.target.file.object.entries.map(fileEntry => fileEntry.name)
+      const templateNames = [DEFAULT_TEMPLATE_NAME, ...templateNamesFromRepository]
+      this.setState({ templateNames })
     })
   }
   selectTemplate({ target }) {
