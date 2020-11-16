@@ -4,10 +4,20 @@ import { Chip } from '@material-ui/core'
 import ApolloClient, { gql } from 'apollo-boost'
 import qs = require('querystring')
 
-const GET_PR_TEMPLATES = gql`
-query Query($repositoryName: String!, $repositoryOwner: String!, $refsRefPrefix: String!, $refsFirst: Int, $filePath: String!) {
+const GET_DEFAULT_BRANCH_NAME = gql`
+query Query($repositoryName: String!, $repositoryOwner: String!) {
   repository(name: $repositoryName, owner: $repositoryOwner) {
-    refs(refPrefix: $refsRefPrefix, last: $refsFirst) {
+    defaultBranchRef {
+      name
+    }
+  }
+}
+`
+
+const GET_PR_TEMPLATES = gql`
+query Query($repositoryName: String!, $repositoryOwner: String!, $refsRefPrefix: String!, $refsLast: Int, $refsQuery: String!, $filePath: String!) {
+  repository(name: $repositoryName, owner: $repositoryOwner) {
+    refs(refPrefix: $refsRefPrefix, last: $refsLast, query: $refsQuery) {
       nodes {
         id
         target {
@@ -52,12 +62,12 @@ const DEFAULT_TEMPLATE_NAME = 'default'
 
 interface PullRequestTemplateSelectorProps {
   classes: { [key: string]: string }
-} 
+}
 
 interface PullRequestTemplateSelectorState {
   templateNames: Array<string>
   selectedTemplateName: string
-} 
+}
 
 class PullRequestTemplateSelector extends React.Component<PullRequestTemplateSelectorProps, PullRequestTemplateSelectorState> {
   constructor(props) {
@@ -83,19 +93,29 @@ class PullRequestTemplateSelector extends React.Component<PullRequestTemplateSel
         }
       })
       githubClient.query({
-        query: GET_PR_TEMPLATES,
+        query: GET_DEFAULT_BRANCH_NAME,
         variables: {
           repositoryName,
           repositoryOwner,
-          refsRefPrefix: 'refs/heads/',
-          refsFirst: 1,
-          filePath: '.github/PULL_REQUEST_TEMPLATE/'
         }
       }).then(({ data }) => {
-        const lastCommit = data.repository.refs.nodes[0]
-        const templateNamesFromRepository = lastCommit.target.file.object.entries.map(fileEntry => fileEntry.name)
-        const templateNames = [DEFAULT_TEMPLATE_NAME, ...templateNamesFromRepository]
-        this.setState({ templateNames })
+        const defaultBranchName = data.repository.defaultBranchRef.name
+        githubClient.query({
+          query: GET_PR_TEMPLATES,
+          variables: {
+            repositoryName,
+            repositoryOwner,
+            refsRefPrefix: 'refs/heads/',
+            refsLast: 1,
+            refsQuery: defaultBranchName,
+            filePath: '.github/PULL_REQUEST_TEMPLATE/'
+          }
+        }).then(({ data }) => {
+          const lastCommit = data.repository.refs.nodes[0]
+          const templateNamesFromRepository = lastCommit.target.file.object.entries.map(fileEntry => fileEntry.name)
+          const templateNames = [DEFAULT_TEMPLATE_NAME, ...templateNamesFromRepository]
+          this.setState({ templateNames })
+        })
       })
     })
   }
