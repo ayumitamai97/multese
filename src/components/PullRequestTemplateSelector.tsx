@@ -12,7 +12,7 @@ const getFileEntriesFromDefaultMainBranchByFilePathQuery = require('../gqls/quer
 
 const styles = (theme: Theme) => ({
   chip: {
-    'margin': theme.spacing(0.5),
+    margin: theme.spacing(0.5),
   },
 })
 

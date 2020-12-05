@@ -11,7 +11,6 @@ const fuse = FuseBox.init({
 })
 
 const showDialog = fuse.bundle('showDialog').instructions(' > showDialog.tsx')
-const showDialog = fuse.bundle('extendConvertNoteToIssue').instructions(' > extendConvertNoteToIssue.tsx')
 const background = fuse.bundle('pageChanged').instructions(' > pageChanged.ts')
 
 if (process.argv.includes('--hmr')) {

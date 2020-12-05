@@ -4,7 +4,6 @@ import CloseIcon from '@material-ui/icons/Close'
 import { withStyles, createStyles, Theme } from '@material-ui/core/styles'
 import RequestGithubToken from './RequestGithubToken'
 import PullRequestTemplateSelector from './PullRequestTemplateSelector'
-import IssueTemplateSelector from './IssueTemplateSelector'
 
 const styles = (theme: Theme) => (createStyles({
   root: {
@@ -67,7 +66,7 @@ class Dialog extends React.Component<DialogProps, DialogState> {
             <CloseIcon />
           </IconButton>
         </Grid>
-        { this.state.token && PullRequestTemplateSelector }
+        { this.state.token && <PullRequestTemplateSelector /> }
         <Divider className={classes.divider} />
         {
           this.state.token && (

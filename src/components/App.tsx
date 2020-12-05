@@ -1,7 +1,6 @@
 import * as React from 'react'
 // import ApolloProvider from '@apollo/client'
 import ApolloClient from 'apollo-boost'
-import { render } from 'react-dom'
 import Dialog from './Dialog'
 import IssueTemplateSelector from './IssueTemplateSelector'
 import { getTokenFromChromeStorage } from '../utils/getTokenFromChromeStorage'
