@@ -17,7 +17,7 @@
       "matches": [
         "https://github.com/*/*"
       ],
-      "js": ["dist/showDialog.js"]
+      "js": ["dist/showDialog.js", "dist/extendConvertNoteToIssue.js"]
     }
   ],
   "background": {
