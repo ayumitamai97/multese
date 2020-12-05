@@ -3,11 +3,12 @@ import { withStyles, Theme } from '@material-ui/core/styles'
 import { Chip } from '@material-ui/core'
 import ApolloClient from 'apollo-boost'
 import qs = require('querystring')
-import { getDefaultBranchNameQuery } from '../gqls/queries/getDefaultBranchName.gql'
-import { getFileEntriesFromDefaultMainBranchByFilePathQuery } from '../gqls/queries/getFileEntriesFromDefaultMainBranchByFilePath.gql'
 import { GithubRepository } from '../@types/github'
 import { getTokenFromChromeStorage } from '../utils/getTokenFromChromeStorage'
 import { extractRepositoryIdentifier } from '../utils/extractRepositoryIdentifier'
+
+const getDefaultBranchNameQuery = require('../gqls/queries/getDefaultBranchName.gql')
+const getFileEntriesFromDefaultMainBranchByFilePathQuery = require('../gqls/queries/getFileEntriesFromDefaultMainBranchByFilePath.gql')
 
 const styles = (theme: Theme) => ({
   chip: {

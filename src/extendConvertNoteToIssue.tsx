@@ -11,7 +11,7 @@ const onPageChangedToComparePage = (message: Message, _sender, _callback) => {
 
     const columnContainer = document.querySelector('.project-columns-container')
     columnContainer.addEventListener('click', event => {
-      const dataDialogId = event.target.getAttribute('data-dialog-id')
+      const dataDialogId = (event.target as HTMLElement).getAttribute('data-dialog-id')
       if (dataDialogId && dataDialogId.match(/^convert-to-issue-/)) {
         const multeseRoot = document.getElementById(multeseRootId) || document.createElement('div')
         multeseRoot.setAttribute('id', multeseRootId)
