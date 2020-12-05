@@ -60,7 +60,7 @@ class Dialog extends React.Component<DialogProps, DialogState> {
       <Box className={classes.root} boxShadow={2}>
         <Grid container justify='space-between' alignItems='center' className={classes.header}>
           <Typography variant='h6'>
-            Select Pull Request Template
+            Select Pull Request template
           </Typography>
           <IconButton size='small' onClick={this.handleClose}>
             <CloseIcon />

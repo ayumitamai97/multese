@@ -1,5 +1,4 @@
 import * as React from 'react'
-// import ApolloProvider from '@apollo/client'
 import ApolloClient from 'apollo-boost'
 import Dialog from './Dialog'
 import IssueTemplateSelector from './IssueTemplateSelector'
@@ -17,21 +16,10 @@ interface AppState {
 class App extends React.Component<AppProps, AppState> {
   constructor(props: AppProps) {
     super(props)
+    // TODO: Setup ApolloProvider near here
     this.state = { client: null }
   }
-  componentDidMount() {
-    getTokenFromChromeStorage(({ token }) => {
-      const client = new ApolloClient({
-        uri: 'https://api.github.com/graphql',
-        headers: {
-          Authorization: `Bearer ${token}`,
-        }
-      })
-      this.setState({ client })
-    })
-  }
   render() {
-    const { client } = this.state
     const { pageType } = this.props
     return (
       <div>
