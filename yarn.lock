@@ -1174,6 +1174,11 @@ fsevents@^1.0.0:
     bindings "^1.5.0"
     nan "^2.12.1"
 
+fuse-box-graphql-plugin@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/fuse-box-graphql-plugin/-/fuse-box-graphql-plugin-1.0.0.tgz#c91710daaf256fd72429b0dca6487510a2705c64"
+  integrity sha1-yRcQ2q8lb9ckKbDcpkh1EKJwXGQ=
+
 fuse-box@^3.7.1:
   version "3.7.1"
   resolved "https://registry.yarnpkg.com/fuse-box/-/fuse-box-3.7.1.tgz#d32879ceee4c8bcec9bbd8fcfe5b29e7142371cd"

@@ -66,9 +66,7 @@ class Dialog extends React.Component<DialogProps, DialogState> {
             <CloseIcon />
           </IconButton>
         </Grid>
-        {
-          this.state.token && <PullRequestTemplateSelector />
-        }
+        { this.state.token && <PullRequestTemplateSelector /> }
         <Divider className={classes.divider} />
         {
           this.state.token && (

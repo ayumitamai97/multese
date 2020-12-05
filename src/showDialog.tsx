@@ -1,26 +1,37 @@
 import * as React from 'react'
 import * as ReactDOM from 'react-dom'
-import Dialog from './components/Dialog'
+import App from './components/App'
 import { Message } from './@types/message'
 
 const multeseRootId = 'multeseRoot'
 
 const onPageChangedToComparePage = (message: Message, _sender, _callback) => {
-  if (message.pageType === 'compare') {
+  if (message.pageType) {
     const multeseRoot = document.getElementById(multeseRootId) || document.createElement('div')
     multeseRoot.setAttribute('id', multeseRootId)
 
-    const body = document.querySelector('body')
-    body.appendChild(multeseRoot)
+    const targetNodeSelectorMapper = {
+      compare: 'body',
+      project: '.js-convert-note-to-issue-form'
+    }
 
-    ReactDOM.render(
-      <Dialog />,
-      document.getElementById(multeseRootId)
-    )
+    const timer = setInterval(() => {
+      const targetNode = document.querySelector(targetNodeSelectorMapper[message.pageType])
+      if (targetNode) {
+        clearInterval(timer)
+        if (document.getElementById(multeseRootId)) { return }
+        targetNode.appendChild(multeseRoot)
+
+        ReactDOM.render(
+          <App pageType={message.pageType} />,
+          document.getElementById(multeseRootId)
+        )
+      }
+    }, 50)
   } else {
-     const oldMulteseRoot = document.getElementById(multeseRootId)
-     if (!oldMulteseRoot) { return }
-     oldMulteseRoot.remove()
+    const oldMulteseRoot = document.getElementById(multeseRootId)
+    if (!oldMulteseRoot) { return }
+    oldMulteseRoot.remove()
   }
 }
 

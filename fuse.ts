@@ -1,9 +1,13 @@
 import { FuseBox } from 'fuse-box'
+import * as GraphQLPlugin from 'fuse-box-graphql-plugin'
 
 const fuse = FuseBox.init({
   homeDir: 'src',
   target: 'browser',
   output: 'dist/$name.js',
+  plugins: [
+    ['.graphql|.gql', GraphQLPlugin()]
+  ],
 })
 
 const showDialog = fuse.bundle('showDialog').instructions(' > showDialog.tsx')

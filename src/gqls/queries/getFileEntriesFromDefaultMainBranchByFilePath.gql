@@ -1,0 +1,32 @@
+query getFileEntriesFromDefaultMainBranchByFilePathQuery($repositoryName: String!, $repositoryOwner: String!, $refsRefPrefix: String!, $refsLast: Int, $refsQuery: String!, $filePath: String!) {
+  repository(name: $repositoryName, owner: $repositoryOwner) {
+    refs(refPrefix: $refsRefPrefix, last: $refsLast, query: $refsQuery) {
+      nodes {
+        id
+        target {
+          __typename
+          ... on Commit {
+            file(path: $filePath) {
+              name
+              type
+              path
+              object {
+                ... on Tree {
+                  id
+                  entries {
+                    name
+                    object {
+                      ... on Blob {
+                        text
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
