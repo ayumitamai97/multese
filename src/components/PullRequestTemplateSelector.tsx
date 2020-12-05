@@ -1,53 +1,17 @@
 import * as React from 'react'
 import { withStyles, Theme } from '@material-ui/core/styles'
 import { Chip } from '@material-ui/core'
-import ApolloClient, { gql } from 'apollo-boost'
+import ApolloClient from 'apollo-boost'
 import qs = require('querystring')
-
-const GET_DEFAULT_BRANCH_NAME = gql`
-query Query($repositoryName: String!, $repositoryOwner: String!) {
-  repository(name: $repositoryName, owner: $repositoryOwner) {
-    defaultBranchRef {
-      name
-    }
-  }
-}
-`
-
-const GET_PR_TEMPLATES = gql`
-query Query($repositoryName: String!, $repositoryOwner: String!, $refsRefPrefix: String!, $refsLast: Int, $refsQuery: String!, $filePath: String!) {
-  repository(name: $repositoryName, owner: $repositoryOwner) {
-    refs(refPrefix: $refsRefPrefix, last: $refsLast, query: $refsQuery) {
-      nodes {
-        id
-        target {
-          __typename
-          ... on Commit {
-            file(path: $filePath) {
-              name
-              type
-              path
-              object {
-                ... on Tree {
-                  id
-                  entries {
-                    name
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    }
-  }
-}
-`
+import { getDefaultBranchNameQuery } from '../gqls/queries/getDefaultBranchName.gql'
+import { getFileEntriesFromDefaultMainBranchByFilePathQuery } from '../gqls/queries/getFileEntriesFromDefaultMainBranchByFilePath.gql'
+import { GithubRepository } from '../@types/github'
+import { getTokenFromChromeStorage } from '../utils/getTokenFromChromeStorage'
+import { extractRepositoryIdentifier } from '../utils/extractRepositoryIdentifier'
 
 const styles = (theme: Theme) => ({
   chip: {
-    'margin-left': theme.spacing(0.5),
-    'margin-right': theme.spacing(0.5)
+    'margin': theme.spacing(0.5),
   },
 })
 
@@ -62,11 +26,6 @@ interface PullRequestTemplateSelectorState {
   selectedTemplateName: string
 }
 
-interface GithubRepository {
-  ownerName: string
-  name: string
-}
-
 class PullRequestTemplateSelector extends React.Component<PullRequestTemplateSelectorProps, PullRequestTemplateSelectorState> {
   constructor(props) {
     super(props)
@@ -79,17 +38,11 @@ class PullRequestTemplateSelector extends React.Component<PullRequestTemplateSel
     const selectedTemplateName = (Array.isArray(query.template) ? query.template[0] : query.template) || DEFAULT_TEMPLATE_NAME
     this.setState({ selectedTemplateName })
 
-    const repositoryIdentifier = this.extractRepositoryIdentifier(location.href)
+    const repositoryIdentifier = extractRepositoryIdentifier(location.href)
     const [repositoryOwner, repositoryName] = repositoryIdentifier.split('/')
     const githubRepository: GithubRepository = { ownerName: repositoryOwner, name: repositoryName }
 
-    this.getTokenFromChromeStorage((storageItems) => this.getTemplateNames(storageItems, githubRepository))
-  }
-  getTokenFromChromeStorage(callback: function) {
-    return chrome.storage.sync.get({ token: '' }, callback)
-  }
-  extractRepositoryIdentifier(url: string): string {
-    return url.match(/https:\/\/github\.com\/\w*\/\w*/)[0].replace(/^https:\/\/github\.com\//, '').replace(/\/$/, '')
+    getTokenFromChromeStorage((storageItems) => this.getTemplateNames(storageItems, githubRepository))
   }
   async getTemplateNames(storageItems: any, githubRepository: GithubRepository) {
     const token = storageItems.token
@@ -100,7 +53,7 @@ class PullRequestTemplateSelector extends React.Component<PullRequestTemplateSel
       }
     })
     const defaultBranchNameResult = await githubClient.query({
-      query: GET_DEFAULT_BRANCH_NAME,
+      query: getDefaultBranchNameQuery,
       variables: {
         repositoryOwner: githubRepository.ownerName,
         repositoryName: githubRepository.name,
@@ -109,7 +62,7 @@ class PullRequestTemplateSelector extends React.Component<PullRequestTemplateSel
     const defaultBranchName = defaultBranchNameResult.data.repository.defaultBranchRef.name
 
     githubClient.query({
-      query: GET_PR_TEMPLATES,
+      query: getFileEntriesFromDefaultMainBranchByFilePathQuery,
       variables: {
         repositoryOwner: githubRepository.ownerName,
         repositoryName: githubRepository.name,

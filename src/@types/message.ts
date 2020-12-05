@@ -1,3 +1,5 @@
+export type PageType = 'compare' | 'project' | ''
+
 export interface Message {
-  pageType: string
+  pageType: PageType
 }
