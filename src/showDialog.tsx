@@ -1,13 +1,14 @@
 import * as React from 'react'
 import * as ReactDOM from 'react-dom'
-import Dialog from './components/Dialog'
+import App from './components/app'
 import { Message } from './@types/message'
 
+const PAGE_TYPE_PROJECT = 'project'
 const multeseRootId = 'multeseRoot'
 
 const onPageChangedToComparePage = (message: Message, _sender, _callback) => {
   if (message.pageType) {
-    if (message.pageType === 'project') { return }
+    if (message.pageType === PAGE_TYPE_PROJECT) { return }
 
     const multeseRoot = document.getElementById(multeseRootId) || document.createElement('div')
     multeseRoot.setAttribute('id', multeseRootId)
@@ -16,7 +17,7 @@ const onPageChangedToComparePage = (message: Message, _sender, _callback) => {
     body.appendChild(multeseRoot)
 
     ReactDOM.render(
-      <Dialog pageType={message.pageType} />,
+      <App pageType={message.pageType} />,
       document.getElementById(multeseRootId)
     )
   } else {

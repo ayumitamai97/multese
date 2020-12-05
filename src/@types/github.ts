@@ -3,6 +3,6 @@ export interface GithubRepository {
   name: string
 }
 
-export interface IssueTemplate {
+export interface IssueTemplateList {
   [key: string]: string
 }

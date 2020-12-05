@@ -3,7 +3,7 @@ import { withStyles, Theme } from '@material-ui/core/styles'
 import { Chip } from '@material-ui/core'
 import ApolloClient from 'apollo-boost'
 import qs = require('querystring')
-import { GithubRepository, IssueTemplate } from '../@types/github'
+import { GithubRepository, IssueTemplateList } from '../@types/github'
 import { getTokenFromChromeStorage } from '../utils/getTokenFromChromeStorage'
 import { extractRepositoryIdentifier } from '../utils/extractRepositoryIdentifier'
 
@@ -31,13 +31,13 @@ interface IssueTemplateSelectorProps {
 }
 
 interface IssueTemplateSelectorState {
-  templates: Array<IssueTemplate>
+  templates: IssueTemplateList
 }
 
 class IssueTemplateSelector extends React.Component<IssueTemplateSelectorProps, IssueTemplateSelectorState> {
   constructor(props) {
     super(props)
-    this.state = { templates: [] }
+    this.state = { templates: {} }
     this.applyTemplate = this.applyTemplate.bind(this)
   }
   componentDidMount() {
@@ -98,7 +98,7 @@ class IssueTemplateSelector extends React.Component<IssueTemplateSelectorProps, 
   }
   render() {
     const { classes } = this.props;
-    if (this.state.templates.length === 0) { return null }
+    if (!this.state.templates) { return null }
     return (
       <div className={classes.root}>
         <div className={classes.title}>

@@ -5,7 +5,6 @@ import { withStyles, createStyles, Theme } from '@material-ui/core/styles'
 import RequestGithubToken from './RequestGithubToken'
 import PullRequestTemplateSelector from './PullRequestTemplateSelector'
 import IssueTemplateSelector from './IssueTemplateSelector'
-import { PageType } from '../@types/message'
 
 const styles = (theme: Theme) => (createStyles({
   root: {
@@ -28,7 +27,6 @@ const styles = (theme: Theme) => (createStyles({
 
 interface DialogProps {
   classes: { [key: string]: string }
-  pageType: PageType
 }
 interface DialogState {
   showDialog: boolean
@@ -56,38 +54,20 @@ class Dialog extends React.Component<DialogProps, DialogState> {
   handleClose() {
     this.setState({ showDialog: false })
   }
-  isComparePage(): boolean {
-    return this.props.pageType === 'compare'
-  }
-  isProjectPage(): boolean {
-    return this.props.pageType === 'project'
-  }
-  templateSelector(pageType: PageType) {
-    const templateSelectorMapper = {
-      compare: <PullRequestTemplateSelector />,
-    }
-    return templateSelectorMapper[pageType]
-  }
-  title(pageType: PageType): string {
-    const titleMapper = {
-      compare: 'Pull Request',
-    }
-    return `Select ${titleMapper[pageType]} template`
-  }
   render() {
-    const { classes, pageType } = this.props
+    const { classes } = this.props
     if (!this.state.showDialog) { return null }
     return (
       <Box className={classes.root} boxShadow={2}>
         <Grid container justify='space-between' alignItems='center' className={classes.header}>
           <Typography variant='h6'>
-            {this.title(pageType)}
+            Select Pull Request Template
           </Typography>
           <IconButton size='small' onClick={this.handleClose}>
             <CloseIcon />
           </IconButton>
         </Grid>
-        { this.state.token && this.templateSelector(pageType) }
+        { this.state.token && PullRequestTemplateSelector }
         <Divider className={classes.divider} />
         {
           this.state.token && (
