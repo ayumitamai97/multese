@@ -10,6 +10,16 @@ import { getTokenFromChromeStorage } from '../utils/getTokenFromChromeStorage'
 import { extractRepositoryIdentifier } from '../utils/extractRepositoryIdentifier'
 
 const styles = (theme: Theme) => ({
+  root: {
+    'margin-top': theme.spacing(2),
+  },
+  title: {
+    'margin-bottom': theme.spacing(0.5),
+  },
+  titleWarning: {
+    fontSize: '10px',
+    color: theme.palette.text.secondary
+  },
   chip: {
     'margin': theme.spacing(0.5),
   },
@@ -86,33 +96,42 @@ class IssueTemplateSelector extends React.Component<IssueTemplateSelectorProps, 
   }
   selectTemplate({ target }) {
     const templateName = target.innerText
-    if (templateName === DEFAULT_TEMPLATE_NAME) {
-      location.href = `${location.origin}${location.pathname}`
-    } else {
-      const query = qs.parse(location.search.replace('?', ''))
-      query.template = templateName
-      const queryString = qs.stringify(query)
-      location.href = `${location.origin}${location.pathname}?${queryString}`
+    if (templateName === DEFAULT_TEMPLATE_NAME) { return }
+    const cardBodyTextArea = document.querySelector('textarea#convert-card-body')
+    const templateBody = this.state.templates[templateName].replace(/-{3}(.|\n)*-{3}\n*/, '')
+    if (cardBodyTextArea.value && !cardBodyTextArea.value.match(/\n$/)) {
+      cardBodyTextArea.value += "\n"
     }
+    cardBodyTextArea.value += templateBody
   }
   isSelected(value) {
     return this.state.selectedTemplateName === value
   }
   render() {
     const { classes } = this.props;
+    if (this.state.templates.length === 0) { return null }
     return (
-      <div>
-        {
-          this.templateNames().map(templateName => (
-            <Chip
-              key={templateName}
-              label={templateName}
-              color={this.isSelected(templateName) ? 'primary' : 'default'}
-              onClick={this.selectTemplate}
-              className={classes.chip}
-            />
-          ))
-        }
+      <div className={classes.root}>
+        <div className={classes.title}>
+          <label>Issue template</label>
+          <br />
+          <span className={classes.titleWarning}>
+            * YAML frontmatter (labels and assignees) will not applied
+          </span>
+        </div>
+        <div>
+          {
+            this.templateNames().map(templateName => (
+              <Chip
+                key={templateName}
+                label={templateName}
+                color='default'
+                onClick={this.selectTemplate}
+                className={classes.chip}
+              />
+            ))
+          }
+        </div>
       </div>
     )
   }
