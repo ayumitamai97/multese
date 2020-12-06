@@ -1,0 +1,7 @@
+query getDefaultBranchNameQuery($repositoryName: String!, $repositoryOwner: String!) {
+  repository(name: $repositoryName, owner: $repositoryOwner) {
+    defaultBranchRef {
+      name
+    }
+  }
+}

@@ -30,6 +30,14 @@ and click "SAVE"
 ![image](misc/main.png)
 
 
+## Features
+- You can apply Pull Request template to your Pull Request when you create new one
+    See "Usage"
+- You can apply Issue template when you convert note to issue at GitHub Project board
+    Note: Meta information in YAML frontmatter like assignees and labels will not be applied
+    ![image](misc/convert_note_to_issue.png)
+
+
 
 ## Troubleshooting
 
