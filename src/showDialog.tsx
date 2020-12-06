@@ -2,6 +2,7 @@ import * as React from 'react'
 import * as ReactDOM from 'react-dom'
 import App from './components/App'
 import { Message } from './@types/message'
+import waitQuerySelector from './utils/waitQuerySelector'
 
 const multeseRootId = 'multeseRoot'
 const createMulteseRoot = (): HTMLElement => {
@@ -10,7 +11,25 @@ const createMulteseRoot = (): HTMLElement => {
   return multeseRoot
 }
 
-const onPageChangedToComparePage = (message: Message, _sender, _callback) => {
+const renderIssueTemplateSelector = function (event) {
+  const { message } = this as any
+  const dataDialogId = (event.target as HTMLElement).getAttribute('data-dialog-id')
+  if (dataDialogId && dataDialogId.match(/^convert-to-issue-/)) {
+    const multeseRoot = createMulteseRoot()
+
+    waitQuerySelector('.js-convert-note-to-issue-form', (targetNode) => {
+      if (document.getElementById(multeseRootId)) { return }
+      targetNode.appendChild(multeseRoot)
+
+      ReactDOM.render(
+        <App pageType={message.pageType} />,
+        document.getElementById(multeseRootId)
+      )
+    })
+  }
+}
+
+const onPageChangedToComparePage = function (message: Message, _sender, _callback): void {
   if (message.pageType) {
     const multeseRoot = createMulteseRoot()
 
@@ -23,29 +42,9 @@ const onPageChangedToComparePage = (message: Message, _sender, _callback) => {
         document.getElementById(multeseRootId)
       )
     } else if (message.pageType === 'project') {
-      const renderIssueTemplateSelector = () => {
-        const dataDialogId = (event.target as HTMLElement).getAttribute('data-dialog-id')
-        if (dataDialogId && dataDialogId.match(/^convert-to-issue-/)) {
-          const multeseRoot = createMulteseRoot()
-
-          const timer = setInterval(() => {
-            const targetNode = document.querySelector('.js-convert-note-to-issue-form')
-            if (targetNode) {
-              clearInterval(timer)
-              if (document.getElementById(multeseRootId)) { return }
-              targetNode.appendChild(multeseRoot)
-
-              ReactDOM.render(
-                <App pageType={message.pageType} />,
-                document.getElementById(multeseRootId)
-              )
-            }
-          }, 50)
-        }
-      }
-
       const columnContainer = document.querySelector('.project-columns-container')
-      columnContainer.addEventListener('click', renderIssueTemplateSelector)
+      this.message = message
+      columnContainer.addEventListener('click', renderIssueTemplateSelector.bind(this))
     }
   } else {
     const oldMulteseRoot = document.getElementById(multeseRootId)
