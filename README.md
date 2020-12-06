@@ -21,7 +21,8 @@ Multese brings order to _chaotic Pull Request description_, by letting you utili
   URL should look like this: https://github.com/ayumitamai97/multese/compare/main...dev
 
 5. Paste your GitHub personal access token to Multese dialog in the upper-right corner of the page
-and click "SAVE"
+
+  and click "SAVE"
 
 ![image](misc/token.png)
 
@@ -32,10 +33,13 @@ and click "SAVE"
 
 ## Features
 - You can apply Pull Request template to your Pull Request when you create new one
-    See "Usage"
+
+  See "Usage"
+
 - You can apply Issue template when you convert note to issue at GitHub Project board
-    Note: Meta information in YAML frontmatter like assignees and labels will not be applied
-    ![image](misc/convert_note_to_issue.png)
+
+  Note: Meta information in YAML frontmatter like assignees and labels will not be applied
+  ![image](misc/convert_note_to_issue.png)
 
 
 
