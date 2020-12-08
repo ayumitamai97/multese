@@ -105,7 +105,7 @@ class IssueTemplateSelector extends React.Component<IssueTemplateSelectorProps, 
           <label>Issue template</label>
           <br />
           <span className={classes.titleWarning}>
-            * YAML frontmatter (labels and assignees) will not applied
+            * YAML frontmatter (labels and assignees) will not be applied
           </span>
         </div>
         <div>
