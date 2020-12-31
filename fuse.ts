@@ -8,6 +8,9 @@ const fuse = FuseBox.init({
   plugins: [
     ['.graphql|.gql', GraphQLPlugin()]
   ],
+  dependencies: {
+    include: ['tslib'],
+  }
 })
 
 const showDialog = fuse.bundle('showDialog').instructions(' > showDialog.tsx')
