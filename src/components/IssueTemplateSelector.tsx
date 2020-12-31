@@ -6,6 +6,7 @@ import qs = require('querystring')
 import { GithubRepository, IssueTemplateList } from '../@types/github'
 import { getTokenFromChromeStorage } from '../utils/getTokenFromChromeStorage'
 import { extractRepositoryIdentifier } from '../utils/extractRepositoryIdentifier'
+import { removeYamlFrontmatter } from '../utils/removeYamlFrontmatter'
 
 const getDefaultBranchNameQuery = require('../gqls/queries/getDefaultBranchName.gql')
 const getFileEntriesFromDefaultMainBranchByFilePathQuery = require('../gqls/queries/getFileEntriesFromDefaultMainBranchByFilePath.gql')
@@ -90,7 +91,7 @@ class IssueTemplateSelector extends React.Component<IssueTemplateSelectorProps, 
   applyTemplate({ target }) {
     const templateName = target.innerText
     const cardBodyTextArea: HTMLInputElement = document.querySelector('textarea#convert-card-body')
-    const templateBody = this.state.templates[templateName].replace(/-{3}(.|\n)*-{3}\n*/, '')
+    const templateBody = removeYamlFrontmatter(this.state.templates[templateName])
     if (cardBodyTextArea.value && !cardBodyTextArea.value.match(/\n$/)) {
       cardBodyTextArea.value += "\n"
     }
